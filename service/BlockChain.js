@@ -7,14 +7,18 @@ var proof =proofContract.at("0xf16943e949d85c4034e41bed12f64b917f8235ec");
 
 exports.storeFile = function (owner, fileHash, done) {
     var message;
-    proof.set.sendTransaction(owner, fileHash, {
-        from: web3.eth.accounts[0],
-        }, function(error, transactionHash){
-        if (!error)
-            message = transactionHash;
-        else
-            message = "Error";
-    })
+    proof.set.sendTransaction(
+        owner,
+        fileHash, 
+        {
+            from: web3.eth.accounts[0],
+        }, 
+        function(error, transactionHash)
+        {
+            if (!error)
+                console.log('error: '+transactionHash);
+        }
+    )
     done(message);
 } 
 

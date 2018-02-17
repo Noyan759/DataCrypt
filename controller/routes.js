@@ -30,9 +30,9 @@ var router = app.Router()
         if(req.body.owner===undefined || req.body.hash===undefined)
             res.render('AddFile', { message: "Owner/FileHash is undefined" });
         
-        // Web3.storeFile(req.body.owner, req.body.hash, function (message) {
-        //     res.render('home', { message: message });
-        // })
+        Web3.storeFile(req.body.owner, req.body.hash, function (message) {
+            res.render('home', { message: message });
+        })
     });
 
 module.exports = router;
