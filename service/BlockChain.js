@@ -15,8 +15,10 @@ exports.storeFile = function (owner, fileHash, done) {
         }, 
         function(error, transactionHash)
         {
-            if (!error)
-                console.log('error: '+transactionHash);
+            if (error)
+                console.log('Error: '+error);
+            else
+                console.log('Transaction Hash: '+transactionHash)
         }
     )
     done(message);
