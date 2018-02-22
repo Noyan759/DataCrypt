@@ -1,5 +1,44 @@
 var Web3 = require("web3");
-web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8081"));
+var HookedWeb3Provider = require("hooked-web3-provider");
+var EthereumTx = require('ethereumjs-tx');
+var bufferFrom = require('buffer-from')
+var keythereum = require("keythereum");
+
+//Private key extraction
+var keydir = "F:/8th_Semester/SYP-II/Externalkeystore";
+var address = "70531c747a4a62f3198a8abb13b57c3b50126b54";
+var keyObject = keythereum.importFromFile(address, keydir);
+var pvtKey = keythereum.recover("account1", keyObject);
+// var pvtKeyString = "0x"+pvtKey.toString('hex')+"";
+// console.log("keyObject: \n" +keyObject+"\nprivateKey: "+pvtKey.toString('hex'));
+
+//Transaction signing
+var provider = new HookedWeb3Provider({
+        host: "http://localhost:8081",
+        transaction_signer: {
+            hasAddress: function(address, callback){
+                callback(null, true);
+            },
+            signTransaction: function(tx_params, callback){
+                var rawTx = {
+                gasPrice: web3.toHex(tx_params.gasPrice),
+                gasLimit: web3.toHex(tx_params.gas),
+                // value: web3.toHex(tx_params.value),
+                from: tx_params.from,
+                //to: tx_params.to,
+                nonce: web3.toHex(tx_params.nonce)
+                };
+                var privateKey = bufferFrom(pvtKey, 'hex');
+                var tx = new EthereumTx(rawTx);
+                tx.sign(privateKey);
+                callback(null, '0x'+tx.serialize().toString('hex'));
+            }
+        }
+});
+
+var web3 = new Web3(provider);
+
+//web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8081"));
 
 var proofContract = web3.eth.contract([{"constant":true,"inputs":[{"name":"fileHash","type":"string"}],"name":"get","outputs":[{"name":"timestamp","type":"uint256"},{"name":"owner","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner","type":"string"},{"name":"fileHash","type":"string"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"status","type":"bool"},{"indexed":false,"name":"timestamp","type":"uint256"},{"indexed":false,"name":"owner","type":"string"},{"indexed":false,"name":"fileHash","type":"string"}],"name":"logFileAddedStatus","type":"event"}]);
 
@@ -11,7 +50,10 @@ exports.storeFile = function (owner, fileHash, done) {
         owner,
         fileHash, 
         {
-            from: web3.eth.accounts[0],
+            from: address,
+            // value: web3.toWei("0.1", "ether"),
+            gasPrice: "20000000000",
+            gas: "200000",
         }, 
         function(error, transactionHash)
         {
