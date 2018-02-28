@@ -7,6 +7,14 @@ var routes = require('./controller/routes');
 
 //var db = require('./config/db.js');
 var hbs = require('hbs');
+hbs.registerHelper('if_equal', function(a, b, opts) {
+  if (a == b) {
+      return opts.fn(this)
+  } else {
+      return opts.inverse(this)
+  }
+})
+
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(express.static(__dirname));
 

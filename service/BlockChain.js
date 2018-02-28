@@ -36,9 +36,9 @@ var provider = new HookedWeb3Provider({
         }
 });
 
-var web3 = new Web3(provider);
+// var web3 = new Web3(provider);
 
-//web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8081"));
+web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8081"));
 
 var proofContract = web3.eth.contract([{"constant":true,"inputs":[{"name":"fileHash","type":"string"}],"name":"get","outputs":[{"name":"timestamp","type":"uint256"},{"name":"owner","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner","type":"string"},{"name":"fileHash","type":"string"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"status","type":"bool"},{"indexed":false,"name":"timestamp","type":"uint256"},{"indexed":false,"name":"owner","type":"string"},{"indexed":false,"name":"fileHash","type":"string"}],"name":"logFileAddedStatus","type":"event"}]);
 
@@ -50,17 +50,20 @@ exports.storeFile = function (owner, fileHash, done) {
         owner,
         fileHash, 
         {
-            from: address,
-            // value: web3.toWei("0.1", "ether"),
+            from: web3.eth.accounts[0],
             gasPrice: "20000000000",
             gas: "200000",
         }, 
         function(error, transactionHash)
         {
-            if (error)
+            if (error){
+                message={transactionHash: "", note: error};
                 console.log('Error: '+error);
-            else
-                console.log('Transaction Hash: '+transactionHash)
+            }
+            else{
+                message={transactionHash: transactionHash, note: "submitted"};
+                console.log('Transaction Hash: '+transactionHash);
+            }
         }
     )
     done(message);
