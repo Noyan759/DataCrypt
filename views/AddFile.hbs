@@ -3,12 +3,12 @@
 <title>DataCrypt</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="/assets/css/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+<script src="assets/js/jquery.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
 <style>
 body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
 body, html {
@@ -80,8 +80,9 @@ body, html {
         <button type="submit" class="btn btn-default" style="color:black">Submit</button>
       </form>
       <br>
+      {{message}}
       {{#if message}}
-        {{#if_equal message.transactionHash ""}}
+        {{#if_equal message.tHash ""}}
           <div class="alert alert-danger">
           <strong>Error!</strong> {{message.note}}
           </div>
@@ -89,7 +90,7 @@ body, html {
           <div class="alert alert-info">
           <strong>Info!</strong> 
           <br> Your file has been submitted for anchoring.
-          <br> Transaction Hash: {{message.transactionHash}}
+          <br> Transaction Hash: {{message.tHash}}
           </div>  
         {{/if_equal}}  
       {{/if}}
@@ -107,37 +108,3 @@ function onClick(element) {
 }
 </body>
 </html>
-
-
-
-<br>
-<br>
-<br>
-  <div class="container">
-    <h2>Add file</h2>
-    <form action="/addFile" method="POST">
-      <div class="form-group">
-        <label for="owner">Owner Name:</label>
-        <input type="text" class="form-control" id="owner" placeholder="Enter owner name" name="owner" required>
-      </div>
-      <div class="form-group">
-        <label for="hash">File Hash:</label>
-        <input type="text" class="form-control" id="hash" placeholder="Enter file hash" name="hash" required>
-      </div>
-      <button type="submit" class="btn btn-default">Submit</button>
-    </form>
-    <br>
-    {{#if message}}
-      {{#if_equal message.transactionHash ""}}
-        <div class="alert alert-danger">
-        <strong>Error!</strong> {{message.note}}
-        </div>
-      {{else}}
-        <div class="alert alert-info">
-        <strong>Info!</strong> 
-        <br> Your file has been for submitted for anchoring.
-        <br> Transaction Hash: {{message.transactionHash}}
-        </div>  
-      {{/if_equal}}  
-    {{/if}}
-  </div>
