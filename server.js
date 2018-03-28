@@ -5,7 +5,10 @@ var bodyParser   = require('body-parser');
 var path = require('path');
 var routes = require('./controller/routes');
 var config = require('./config/config');
+var authConfig=require('./configs/authConfig');
 var Web3 = require("web3");
+var jwt = require('jsonwebtoken');
+var authMiddleware = require('./middlewares/authMiddleware');
 //web3
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8081"));
 var Account=require('./service/AccountManagement');
@@ -23,7 +26,7 @@ hbs.registerHelper('if_equal', function(a, b, opts) {
       return opts.inverse(this)
   }
 })
-
+app.set('superSecret', authConfig.secret); // secret variable
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(express.static(__dirname));
 
@@ -43,6 +46,8 @@ app.use('/', routes);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+authMiddleware.jwt=jwt;
+authMiddleware.app=app;
 // require('./controller/routes.js')(app);
 app.listen(port);
 console.log('The magic happens on port ' + port);
