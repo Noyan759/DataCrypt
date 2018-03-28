@@ -1,8 +1,11 @@
-var Web3 = require("web3");
+// var Web3 = require("web3");
 var HookedWeb3Provider = require("hooked-web3-provider");
 var EthereumTx = require('ethereumjs-tx');
 var bufferFrom = require('buffer-from')
 var keythereum = require("keythereum");
+var Account=require('./BCAccountManagement');
+
+var web3;
 
 //Private key extraction
 var keydir = "F:/8th_Semester/SYP-II/Externalkeystore";
@@ -38,11 +41,18 @@ var provider = new HookedWeb3Provider({
 
 // var web3 = new Web3(provider);
 
-web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8081"));
+// web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8081"));
+// Account.web3=web3;
+var proof;
+exports.initialize = function () {
+    web3=exports.web3
+    var proofContract = web3.eth.contract([{"constant":true,"inputs":[{"name":"fileHash","type":"string"}],"name":"get","outputs":[{"name":"timestamp","type":"uint256"},{"name":"owner","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner","type":"string"},{"name":"fileHash","type":"string"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"status","type":"bool"},{"indexed":false,"name":"timestamp","type":"uint256"},{"indexed":false,"name":"owner","type":"string"},{"indexed":false,"name":"fileHash","type":"string"}],"name":"logFileAddedStatus","type":"event"}]);
 
-var proofContract = web3.eth.contract([{"constant":true,"inputs":[{"name":"fileHash","type":"string"}],"name":"get","outputs":[{"name":"timestamp","type":"uint256"},{"name":"owner","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner","type":"string"},{"name":"fileHash","type":"string"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"status","type":"bool"},{"indexed":false,"name":"timestamp","type":"uint256"},{"indexed":false,"name":"owner","type":"string"},{"indexed":false,"name":"fileHash","type":"string"}],"name":"logFileAddedStatus","type":"event"}]);
+    proof =proofContract.at("0xf16943e949d85c4034e41bed12f64b917f8235ec");
+}
+// var proofContract = web3.eth.contract([{"constant":true,"inputs":[{"name":"fileHash","type":"string"}],"name":"get","outputs":[{"name":"timestamp","type":"uint256"},{"name":"owner","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner","type":"string"},{"name":"fileHash","type":"string"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"status","type":"bool"},{"indexed":false,"name":"timestamp","type":"uint256"},{"indexed":false,"name":"owner","type":"string"},{"indexed":false,"name":"fileHash","type":"string"}],"name":"logFileAddedStatus","type":"event"}]);
 
-var proof =proofContract.at("0xf16943e949d85c4034e41bed12f64b917f8235ec");
+// var proof =proofContract.at("0xf16943e949d85c4034e41bed12f64b917f8235ec");
 
 exports.storeFile = function (owner, fileHash, done) {
     var message;
@@ -73,6 +83,9 @@ exports.storeFile = function (owner, fileHash, done) {
 
 exports.getInfo = function (fileHash, done) {
     var info;
+    Account.checkBalance(web3.eth.accounts[0], function (info) {
+        console.log("info:"+info);
+    });
     info=proof.get.call(fileHash);
     done(info)
 }

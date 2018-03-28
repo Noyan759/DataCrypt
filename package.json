@@ -17,6 +17,7 @@
     "hbs": "^4.0.1",
     "hooked-web3-provider": "^1.0.0",
     "keythereum": "^1.0.2",
+    "mongoose": "^5.0.12",
     "nodemon": "^1.15.0",
     "web3": "^0.20.0"
   }
