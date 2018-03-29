@@ -16,8 +16,7 @@ module.exports.construct = function (body_parser,app) {
     router.post('/', function (req, res, next) {
 
         // find the user
-        account.getByEmail(req.body.email)
-            .then(function (user) {
+        account.getByEmail(req.body.email, function (user) {
 
 
             if (!user) {
