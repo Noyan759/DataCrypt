@@ -4,6 +4,7 @@ var EthereumTx = require('ethereumjs-tx');
 var bufferFrom = require('buffer-from')
 var keythereum = require("keythereum");
 var BCAccount=require('./BCAccountService');
+var DCAccount=require('./DCAccountService');
 
 var web3;
 
@@ -54,38 +55,43 @@ exports.initialize = function () {
 
 // var proof =proofContract.at("0xf16943e949d85c4034e41bed12f64b917f8235ec");
 
-exports.storeFile = function (owner, fileHash, done) {
+exports.storeFile = function (data, done) {
     var message;
-    web3.personal.unlockAccount(web3.eth.accounts[0], "paccount0");
-    proof.set.sendTransaction(
-        owner,
-        fileHash, 
-        {
-            from: web3.eth.accounts[0],
-            gasPrice: "20000000000",
-            gas: "200000",
-        }, 
-        function(error, transactionHash)
-        {
-            if (error){
-                message={tHash: "", note: error};
-                console.log('Error: '+error);
-            }
-            else{
-                message={tHash: transactionHash, note: "submitted"};
-                console.log('Transaction Hash: '+message.tHash);
-            }
-            done(message);
-        }
-    )
+    DCAccount.getByUsername(data, function (userDetails) {
+        BCAccount.unlockAccount(userDetails.address, data.password, function (info) {
+            console.log("info:"+info);
+            if(!info)
+                done({message: 'File cannot be submitted.'})
+            // web3.personal.unlockAccount(web3.eth.accounts[0], "paccount0");
+            proof.set.sendTransaction(
+                userDetails.address,
+                data.hash, 
+                {
+                    from: userDetails.address,
+                    gasPrice: "20000000000",
+                    gas: "200000",
+                }, 
+                function(error, transactionHash)
+                {
+                    if (error){
+                        message={tHash: "", note: error};
+                        console.log('Error: '+error);
+                    }
+                    else{
+                        message={tHash: transactionHash, note: "submitted"};
+                        console.log('Transaction Hash: '+message.tHash);
+                    }
+                    done(message);
+                }
+            )
+        });
+    })
+    
+    
     // done(message);
 } 
 
 exports.getInfo = function (fileHash, done) {
-    var info;
-    BCAccount.createAccount('testAccount1', function (info) {
-        console.log("info:"+info);
-    });
-    info=proof.get.call(fileHash);
+    let info=proof.get.call(fileHash);
     done(info)
 }

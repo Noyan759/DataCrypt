@@ -7,7 +7,7 @@ const USER_INFO = new Schema({
  id: ObjectId,
  username: String,
  password: String,
- email: string,
+ email: String,
  address: String,
  privatekey: String
 });
@@ -44,7 +44,7 @@ exports.getAllAccounts = function(done) {
 }
 
 exports.getByUsername = function (data, done) {
-    User.find({ username: data.username }, function(err, user) {
+    User.findOne({ username: data.username }, function(err, user) {
         if (err) throw err;
       
         // object of the user

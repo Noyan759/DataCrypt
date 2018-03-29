@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const account = require('../models/DCAccountManagement');
+const account = require('../service/DCAccountService');
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -17,17 +17,18 @@ module.exports.construct = function (body_parser,app) {
     router.post('/', function (req, res, next) {
 
         // find the user
-        account.getByEmail(req.body.email, function (user) {
+        account.getByUsername(req.body, function (user) {
 
 
             if (!user) {
                 res.json({success: false, message: 'Authentication failed. User not found.'});
             } else if (user) {
-
+                console.log('req.body  ===>>>>>',req.body)
+                console.log('user ====>>',user);
                 // check if password matches
-                bcrypt.compare(req.body.password, user.password).then(function(res) {
+                bcrypt.compare(req.body.password, user.password).then(function(result) {
                     // res == true
-                    if(!res)
+                    if(!result)
                     {
                         res.json({success: false, message: 'Authentication failed. Wrong password.'});
                     }

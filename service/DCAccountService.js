@@ -5,13 +5,20 @@ const saltRounds = 10;
 
 var details;
 exports.createAccount = function(data, done) {
+    console.log(data);
     BCAccountService.createAccount(data.password, function (address) {
         data.address=address;
         data.privateKey=null;
+        console.log('check 1');
+        console.log(data);
         bcrypt.hash(data.password, saltRounds).then(function(hash) {
             // Store hash in your password DB.
             data.password=hash;
+            console.log('check 2');
+
             DCAccountModel.createAccount(data, function (info) {
+                console.log('check 3');
+
                 console.log("createAccount response: "+info);
                 done(info);
             })
