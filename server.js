@@ -7,6 +7,9 @@ var routes = require('./controller/routes');
 var config = require('./config/config');
 var Web3 = require("web3");
 //web3
+var jwt = require('jsonwebtoken');
+var authMiddleware = require('./middlewares/authMiddleware');
+var authenticate = require('./controller/authenticateController');
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8081"));
 var BCAccount=require('./service/BCAccountService');
 var BlockChain=require('./service/BlockChain');
@@ -36,9 +39,19 @@ app.use(express.static(__dirname));
     console.log('Connected.')
   }
 })*/
+app.set('superSecret', authConfig.secret); // secret variable
+authMiddleware.jwt=jwt;
+authMiddleware.app=app;
+authenticate.jwt=jwt;
+authenticate.construct(bodyParser,app);
 
 app.use(bodyParser()); // get information from html forms
 app.use('/', routes);
+app.use('/authenticate', authenticate.router);
+app.use(authMiddleware);
+app.get('/hello',function(req,res){
+  res.send('hello back!');
+})
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
