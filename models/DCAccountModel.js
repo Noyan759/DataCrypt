@@ -14,7 +14,7 @@ const USER_INFO = new Schema({
 
 var User = mongoose.model('user', USER_INFO);
 
-exports.createDCAccount = function (data, done) {
+exports.createAccount = function (data, done) {
     var person = new User({
         username: data.username,
         password: data.password,
@@ -32,7 +32,7 @@ exports.createDCAccount = function (data, done) {
     // done(info)
 }
 
-exports.getAllDCAccounts = function(done) {
+exports.getAllAccounts = function(done) {
     // get all the users
     User.find({}, function(err, users) {
         if (err) throw err;
@@ -53,7 +53,7 @@ exports.getByUsername = function (data, done) {
     });
 }
 
-exports.updateDCAccount = function (data, done) {
+exports.updateAccount = function (data, done) {
     User.findOneAndUpdate({ username: data.username }, data , function(err, user) {
         if (err) throw err;
       

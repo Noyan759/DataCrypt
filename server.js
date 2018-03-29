@@ -8,12 +8,12 @@ var config = require('./config/config');
 var Web3 = require("web3");
 //web3
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8081"));
-var Account=require('./service/AccountManagement');
+var BCAccount=require('./service/BCAccountService');
 var BlockChain=require('./service/BlockChain');
 BlockChain.web3=web3;
-Account.web3=web3;
+BCAccount.web3=web3;
 BlockChain.initialize();
-Account.initialze();
+BCAccount.initialze();
 //var db = require('./config/db.js');
 var hbs = require('hbs');
 hbs.registerHelper('if_equal', function(a, b, opts) {

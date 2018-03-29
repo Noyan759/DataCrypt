@@ -3,7 +3,7 @@ var HookedWeb3Provider = require("hooked-web3-provider");
 var EthereumTx = require('ethereumjs-tx');
 var bufferFrom = require('buffer-from')
 var keythereum = require("keythereum");
-var Account=require('./BCAccountService');
+var BCAccount=require('./BCAccountService');
 
 var web3;
 
@@ -83,7 +83,7 @@ exports.storeFile = function (owner, fileHash, done) {
 
 exports.getInfo = function (fileHash, done) {
     var info;
-    Account.checkBalance(web3.eth.accounts[0], function (info) {
+    BCAccount.createAccount('testAccount1', function (info) {
         console.log("info:"+info);
     });
     info=proof.get.call(fileHash);
