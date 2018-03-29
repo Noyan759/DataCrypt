@@ -3,7 +3,7 @@ var HookedWeb3Provider = require("hooked-web3-provider");
 var EthereumTx = require('ethereumjs-tx');
 var bufferFrom = require('buffer-from')
 var keythereum = require("keythereum");
-var Account=require('./BCAccountManagement');
+var Account=require('./BCAccountService');
 
 var web3;
 
