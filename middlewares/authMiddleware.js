@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-const account = require('../models/DCAccountManagement');
-
 let jwt;
 let app;
 

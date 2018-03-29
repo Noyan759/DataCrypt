@@ -7,7 +7,7 @@ const USER_INFO = new Schema({
  id: ObjectId,
  username: String,
  password: String,
- email: string,
+ email: String,
  address: String,
  privatekey: String
 });

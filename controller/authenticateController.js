@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const account = require('../models/DCAccountManagement');
+const account = require('../service/DCAccountService');
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -17,7 +17,7 @@ module.exports.construct = function (body_parser,app) {
     router.post('/', function (req, res, next) {
 
         // find the user
-        account.getByEmail(req.body.email, function (user) {
+        account.getByUsername(req.body.email, function (user) {
 
 
             if (!user) {

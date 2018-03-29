@@ -8,10 +8,10 @@ var BCAccount=require('./BCAccountService');
 var web3;
 
 //Private key extraction
-var keydir = "F:/8th_Semester/SYP-II/Externalkeystore";
-var address = "70531c747a4a62f3198a8abb13b57c3b50126b54";
-var keyObject = keythereum.importFromFile(address, keydir);
-var pvtKey = keythereum.recover("account1", keyObject);
+// var keydir = "F:/8th_Semester/SYP-II/Externalkeystore";
+// var address = "70531c747a4a62f3198a8abb13b57c3b50126b54";
+// var keyObject = keythereum.importFromFile(address, keydir);
+// var pvtKey = keythereum.recover("account1", keyObject);
 // var pvtKeyString = "0x"+pvtKey.toString('hex')+"";
 // console.log("keyObject: \n" +keyObject+"\nprivateKey: "+pvtKey.toString('hex'));
 
@@ -56,7 +56,7 @@ exports.initialize = function () {
 
 exports.storeFile = function (owner, fileHash, done) {
     var message;
-    web3.personal.unlockAccount(web3.eth.accounts[0], "paccount0");
+    web3.personal.unlockAccount(web3.eth.accounts[0], "123456");
     proof.set.sendTransaction(
         owner,
         fileHash, 

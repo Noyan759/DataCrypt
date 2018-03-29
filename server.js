@@ -7,6 +7,7 @@ var routes = require('./controller/routes');
 var config = require('./config/config');
 var Web3 = require("web3");
 //web3
+var authConfig = require('./config/authConfig');
 var jwt = require('jsonwebtoken');
 var authMiddleware = require('./middlewares/authMiddleware');
 var authenticate = require('./controller/authenticateController');
