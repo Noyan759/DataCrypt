@@ -21,7 +21,7 @@ var router = app.Router()
         Web3.getInfo(req.body.hash, function (info) {
             console.log(info);
             if(info[1]==="")
-                res.render('VerifyFile', { message: "File not found" });
+                res.json({message: "File not found" });
             else{
                 var d=new Date(info[0].c*1000);
                 console.log("Date: "+d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear());
