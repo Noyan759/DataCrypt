@@ -106,31 +106,33 @@ var info=null;
 exports.storeFile = function (data, done) {
     var message;
     DCAccount.getByUsername(data, function (userDetails) {
-        BCAccount.unlockAccount(userDetails.user.address, data.password, function (info) {
+        BCAccount.unlockAccount(userDetails.message.address, data.password, function (info) {
             // console.log("info:");
             // console.log(info.res);
-            if(!(info.response))
+            if(!(info.message))
                 done({message: 'File cannot be submitted.'})
             else{
                 proof.set.sendTransaction(
-                    userDetails.user.address,
+                    userDetails.message.address,
                     data.hash, 
                     {
-                        from: userDetails.user.address,
+                        from: userDetails.message.address,
                         gasPrice: "20000000000",
                         gas: "200000",
                     }, 
                     function(error, transactionHash)
                     {
                         if (error){
-                            message={tHash: "", note: error, status: false};
+                            info.message={tHash: "", note: error};
+                            info.status=false;
                             console.log('Error: '+error);
                         }
                         else{
-                            message={tHash: transactionHash, note: "submitted", status: true};
+                            info.message={tHash: transactionHash, note: "submitted"};
+                            info.status=true;
                             console.log('Transaction Hash: '+message.tHash);
                         }
-                        done(message);
+                        done(info);
                     }
                 )
             }

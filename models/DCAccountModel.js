@@ -28,6 +28,7 @@ exports.createAccount = function (data, done) {
             throw err;
         }
         info.status=true;
+        info.message={publicAddress: data.address};
         console.log(info);
         done(info);
     })
@@ -44,7 +45,7 @@ exports.getAllAccounts = function(done) {
         // object of all the users
         console.log(users);
         info.status=true;
-        info.response=users
+        info.message=users
         done(info);
     });
 }
@@ -61,7 +62,7 @@ exports.getByUsername = function (data, done) {
             info.status=true;      
         // object of the user
         console.log('getByUsername: '+user);
-        info.user=user   
+        info.message=user; 
         done(info);
     });
 }
@@ -75,7 +76,7 @@ exports.updateAccount = function (data, done) {
         // we have the updated user returned to us
         console.log(user);
         info.status=true;
-        info.response=user
+        info.message=user
         done(info);
     });
 }
@@ -83,10 +84,12 @@ exports.updateAccount = function (data, done) {
 exports.deleteDCAccount = function (data, done) {
     User.findOneAndRemove({ username: data.username }, function(err) {
         if (err){
+            info.message="Error!";
             info.status=false;
             throw err;
         }        
         // we have deleted the user
+        info.message="Deleted!";
         info.status=true;
         console.log(info);
         done(info);

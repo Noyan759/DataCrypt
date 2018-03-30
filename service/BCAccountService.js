@@ -13,7 +13,7 @@ exports.createAccount = function (passPhrase, done) {
         }
         else
             info.status=true;
-        info.response=res;
+        info.message=res;
         done(info);
     });
 }
@@ -25,7 +25,7 @@ exports.checkBalance = function (accountAddress, done) {
             info.status=false;
         else
             info.status=true;
-        info.response=res;
+        info.message=res;
         done(info);
     });
 }
@@ -36,7 +36,7 @@ exports.unlockAccount = function (accountAddress, passPhrase, done) {
             info.status=false;
         else
             info.status=true;
-        info.response=res;
+        info.message=res;
         done(info);
     });
 }
