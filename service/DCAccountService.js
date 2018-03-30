@@ -10,7 +10,7 @@ exports.createAccount = function(data, done) {
             done(address);
         }
         else{
-            data.address=address.response;
+            data.address=address.message;
             data.privateKey=null;
             console.log(data);
             bcrypt.hash(data.password, saltRounds).then(function(hash) {
@@ -57,7 +57,7 @@ exports.deleteAccount = function (data, done) {
 exports.checkBalance = function (data, done) {
     DCAccountModel.getByUsername(data, function (res) {
         console.log('userdetails: '+res.user);
-        if(!(res.user)){
+        if(!(res.message)){
             info.message='User not found';
             console.log(info.message);
             info.status=false;
@@ -73,8 +73,8 @@ exports.checkBalance = function (data, done) {
 
 exports.unlockAccount = function (data, done) {
     DCAccountModel.getByUsername(data, function (res) {
-        console.log('userdetails: '+res.user);
-        if(!(res.user)){
+        console.log('userdetails: '+res.message);
+        if(!(res.message)){
             info.message='User not found';
             console.log(info.message);
             info.status=false;
