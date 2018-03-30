@@ -2,27 +2,27 @@ var DCAccountModel = require('../models/DCAccountModel');
 var BCAccountService = require('./BCAccountService');
 var bcrypt = require ('bcrypt');
 const saltRounds = 10;
-
+var info={};
 var details;
 exports.createAccount = function(data, done) {
-    console.log(data);
     BCAccountService.createAccount(data.password, function (address) {
-        data.address=address;
-        data.privateKey=null;
-        console.log('check 1');
-        console.log(data);
-        bcrypt.hash(data.password, saltRounds).then(function(hash) {
-            // Store hash in your password DB.
-            data.password=hash;
-            console.log('check 2');
+        if(address.status==false){
+            done(address);
+        }
+        else{
+            data.address=address.response;
+            data.privateKey=null;
+            console.log(data);
+            bcrypt.hash(data.password, saltRounds).then(function(hash) {
+                // Store hash in your password DB.
+                data.password=hash;
 
-            DCAccountModel.createAccount(data, function (info) {
-                console.log('check 3');
-
-                console.log("createAccount response: "+info);
-                done(info);
-            })
-        });
+                DCAccountModel.createAccount(data, function (info) {
+                    console.log("createAccount response: "+info);
+                    done(info);
+                })
+            });
+        }
     });
 }
 
@@ -55,17 +55,35 @@ exports.deleteAccount = function (data, done) {
 }
 
 exports.checkBalance = function (data, done) {
-    DCAccountModel.getByUsername(data, function (userDetails) {
-        BCAccountService.checkBalance(userDetails.address, function(balance) {
-            done(balance);
-        })
+    DCAccountModel.getByUsername(data, function (res) {
+        console.log('userdetails: '+res.user);
+        if(!(res.user)){
+            info.message='User not found';
+            console.log(info.message);
+            info.status=false;
+            done(info);
+        }
+        else{
+            BCAccountService.checkBalance(res.user.address, function(info) {
+                done(info);
+            })
+        }
     })
 }
 
 exports.unlockAccount = function (data, done) {
-    DCAccountModel.getByUsername(data, function (userDetails) {
-        BCAccountService.unlockAccount(userDetails.address, data.password, function(balance) {
-            done(balance);
-        })
+    DCAccountModel.getByUsername(data, function (res) {
+        console.log('userdetails: '+res.user);
+        if(!(res.user)){
+            info.message='User not found';
+            console.log(info.message);
+            info.status=false;
+            done(info);
+        }
+        else{
+            BCAccountService.unlockAccount(res.user.address, data.password, function(info) {
+                done(info);
+            })
+        }
     })
 }

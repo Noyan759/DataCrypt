@@ -17,10 +17,11 @@
     "express": "^4.16.2",
     "hbs": "^4.0.1",
     "hooked-web3-provider": "^1.0.0",
+    "jsonwebtoken": "^8.2.0",
     "keythereum": "^1.0.2",
     "mongoose": "^5.0.12",
     "nodemon": "^1.15.0",
-    "web3": "0.20.0",
-    "jsonwebtoken": "^8.2.0"
+    "socket.io": "^2.1.0",
+    "web3": "0.20.0"
   }
 }

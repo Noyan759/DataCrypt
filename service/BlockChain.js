@@ -5,10 +5,10 @@ var bufferFrom = require('buffer-from')
 var keythereum = require("keythereum");
 var BCAccount=require('./BCAccountService');
 var DCAccount=require('./DCAccountService');
+// var io = require('socket.io');
+var web3, io;
 
-var web3;
-
-//Private key extraction
+//Private key extraction    
 var keydir = "F:/8th_Semester/SYP-II/Externalkeystore";
 var address = "70531c747a4a62f3198a8abb13b57c3b50126b54";
 var keyObject = keythereum.importFromFile(address, keydir);
@@ -44,46 +44,96 @@ var provider = new HookedWeb3Provider({
 
 // web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8081"));
 // Account.web3=web3;
+var ws,stompClient;
+initializeWebSocketConnection = function() {
+    ws = new SockJS('http://192.168.210.108:9000/socket');
+
+    // var client = sjsc.create("http://192.168.210.108:9000/socket");
+    // client.on('connection', function () { 
+    //     // connection is established
+    //     console.log('connected');
+    // });
+    // client.on('data', function (msg) { 
+    //     // received some data
+    //     console.log('Received message: '+msg); 
+    // });
+    // client.on('error', function (e) { 
+    //     // something went wrong 
+    //     console.log('error: '+e);
+    // });
+    // client.write("testingtesgintesting");
+
+    stompClient = Stomp.over(ws);
+    console.log('connecting');
+    stompClient.connect({}, function(frame) {
+      console.log('subscribing');
+      stompClient.subscribe('/chat', (message) => {
+        console.log('checking')
+        if (message.body) {
+          console.log('Received message: '+message.body);
+        }
+        stompClient.send('/app/send/message' , {}, 'result');
+      });
+    });
+    console.log("cannot connect");
+
+}
+
 var proof;
 exports.initialize = function () {
-    web3=exports.web3
+    web3=exports.web3;
+    io=exports.io;
     var proofContract = web3.eth.contract([{"constant":true,"inputs":[{"name":"fileHash","type":"string"}],"name":"get","outputs":[{"name":"timestamp","type":"uint256"},{"name":"owner","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner","type":"string"},{"name":"fileHash","type":"string"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"status","type":"bool"},{"indexed":false,"name":"timestamp","type":"uint256"},{"indexed":false,"name":"owner","type":"string"},{"indexed":false,"name":"fileHash","type":"string"}],"name":"logFileAddedStatus","type":"event"}]);
 
     proof =proofContract.at("0xf16943e949d85c4034e41bed12f64b917f8235ec");
+    // console.log('Calling initializeWebSockeConnection');
+    // initializeWebSocketConnection();
+    // console.log('Returned from initializeWebSockeConnection');
+    console.log('Initialize io: '+io);
+    io.send('hello world!');
+    proof.logFileAddedStatus().watch(function(error, result){
+        if(!error) {
+            if(result.args.status == true) {
+                io.send(result);
+            }
+        }
+    })
 }
 // var proofContract = web3.eth.contract([{"constant":true,"inputs":[{"name":"fileHash","type":"string"}],"name":"get","outputs":[{"name":"timestamp","type":"uint256"},{"name":"owner","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner","type":"string"},{"name":"fileHash","type":"string"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"status","type":"bool"},{"indexed":false,"name":"timestamp","type":"uint256"},{"indexed":false,"name":"owner","type":"string"},{"indexed":false,"name":"fileHash","type":"string"}],"name":"logFileAddedStatus","type":"event"}]);
 
 // var proof =proofContract.at("0xf16943e949d85c4034e41bed12f64b917f8235ec");
-
+var info=null;
 exports.storeFile = function (data, done) {
     var message;
     DCAccount.getByUsername(data, function (userDetails) {
-        BCAccount.unlockAccount(userDetails.address, data.password, function (info) {
-            console.log("info:"+info);
-            if(!info)
+        BCAccount.unlockAccount(userDetails.user.address, data.password, function (info) {
+            // console.log("info:");
+            // console.log(info.res);
+            if(!(info.response))
                 done({message: 'File cannot be submitted.'})
-            // web3.personal.unlockAccount(web3.eth.accounts[0], "paccount0");
-            proof.set.sendTransaction(
-                userDetails.address,
-                data.hash, 
-                {
-                    from: userDetails.address,
-                    gasPrice: "20000000000",
-                    gas: "200000",
-                }, 
-                function(error, transactionHash)
-                {
-                    if (error){
-                        message={tHash: "", note: error};
-                        console.log('Error: '+error);
+            else{
+                proof.set.sendTransaction(
+                    userDetails.user.address,
+                    data.hash, 
+                    {
+                        from: userDetails.user.address,
+                        gasPrice: "20000000000",
+                        gas: "200000",
+                    }, 
+                    function(error, transactionHash)
+                    {
+                        if (error){
+                            message={tHash: "", note: error, status: false};
+                            console.log('Error: '+error);
+                        }
+                        else{
+                            message={tHash: transactionHash, note: "submitted", status: true};
+                            console.log('Transaction Hash: '+message.tHash);
+                        }
+                        done(message);
                     }
-                    else{
-                        message={tHash: transactionHash, note: "submitted"};
-                        console.log('Transaction Hash: '+message.tHash);
-                    }
-                    done(message);
-                }
-            )
+                )
+            }
         });
     })
     
@@ -92,6 +142,12 @@ exports.storeFile = function (data, done) {
 } 
 
 exports.getInfo = function (fileHash, done) {
-    let info=proof.get.call(fileHash);
+    try{
+        info=proof.get.call(fileHash);
+    }
+    catch(err){
+        console.log('Caught error: '+err);
+    }
+    
     done(info)
 }

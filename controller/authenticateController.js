@@ -26,10 +26,11 @@ module.exports.construct = function (body_parser,app) {
                 console.log('req.body  ===>>>>>',req.body)
                 console.log('user ====>>',user);
                 // check if password matches
-                bcrypt.compare(req.body.password, user.password).then(function(result) {
+                bcrypt.compare(req.body.password, user.user.password).then(function(result) {
                     // res == true
                     if(!result)
                     {
+                        console.log("Cannot authenticate");
                         res.json({success: false, message: 'Authentication failed. Wrong password.'});
                     }
                     else{
@@ -39,8 +40,8 @@ module.exports.construct = function (body_parser,app) {
                         let dateToday = new Date();
 
                         let userDetails ={
-                            email: user.email,
-                            password: user.password,
+                            email: user.user.email,
+                            password: user.user.password,
                             dateToday: dateToday
                         };
                         console.log(userDetails);
@@ -51,7 +52,7 @@ module.exports.construct = function (body_parser,app) {
 
                         // return the information including token as JSON
                         res.json({
-                            success: true,
+                            status: true,
                             message: 'Enjoy your token!',
                             token: token,
                             id: user.id
