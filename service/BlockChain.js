@@ -9,10 +9,10 @@ var DCAccount=require('./DCAccountService');
 var web3, io;
 
 //Private key extraction    
-var keydir = "F:/8th_Semester/SYP-II/Externalkeystore";
-var address = "70531c747a4a62f3198a8abb13b57c3b50126b54";
-var keyObject = keythereum.importFromFile(address, keydir);
-var pvtKey = keythereum.recover("account1", keyObject);
+//var keydir = "F:/8th_Semester/SYP-II/Externalkeystore";
+//var address = "70531c747a4a62f3198a8abb13b57c3b50126b54";
+//var keyObject = keythereum.importFromFile(address, keydir);
+//var pvtKey = keythereum.recover("account1", keyObject);
 // var pvtKeyString = "0x"+pvtKey.toString('hex')+"";
 // console.log("keyObject: \n" +keyObject+"\nprivateKey: "+pvtKey.toString('hex'));
 
@@ -85,7 +85,7 @@ exports.initialize = function () {
     io=exports.io;
     var proofContract = web3.eth.contract([{"constant":true,"inputs":[{"name":"fileHash","type":"string"}],"name":"get","outputs":[{"name":"timestamp","type":"uint256"},{"name":"owner","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner","type":"string"},{"name":"fileHash","type":"string"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"status","type":"bool"},{"indexed":false,"name":"timestamp","type":"uint256"},{"indexed":false,"name":"owner","type":"string"},{"indexed":false,"name":"fileHash","type":"string"}],"name":"logFileAddedStatus","type":"event"}]);
 
-    proof =proofContract.at("0xf16943e949d85c4034e41bed12f64b917f8235ec");
+    proof =proofContract.at("0x7093033ca9e21c57564feca1d0f0f804b0d02d3d");
     // console.log('Calling initializeWebSockeConnection');
     // initializeWebSocketConnection();
     // console.log('Returned from initializeWebSockeConnection');
