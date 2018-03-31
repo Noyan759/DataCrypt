@@ -130,7 +130,7 @@ exports.storeFile = function (data, done) {
                         else{
                             info.message={tHash: transactionHash, note: "submitted"};
                             info.status=true;
-                            console.log('Transaction Hash: '+message.tHash);
+                            console.log('Transaction Hash: '+info.message.tHash);
                         }
                         done(info);
                     }
