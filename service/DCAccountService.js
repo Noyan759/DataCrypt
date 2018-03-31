@@ -3,6 +3,10 @@ var BCAccountService = require('./BCAccountService');
 var bcrypt = require ('bcrypt');
 const saltRounds = 10;
 var info={};
+var web3;
+exports.initialze = function () {
+    web3=module.exports.web3;
+}
 var details;
 exports.createAccount = function(data, done) {
     BCAccountService.createAccount(data.password, function (address) {
@@ -12,6 +16,10 @@ exports.createAccount = function(data, done) {
         else{
             data.address=address.message;
             data.privateKey=null;
+            BCAccountService.sendEther(web3.eth.accounts[0], data.address, function(info) {
+                if(info.status)
+                    console.log('Base amount(1 Ether) transfered!');
+            })
             console.log(data);
             bcrypt.hash(data.password, saltRounds).then(function(hash) {
                 // Store hash in your password DB.

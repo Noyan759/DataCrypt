@@ -40,3 +40,14 @@ exports.unlockAccount = function (accountAddress, passPhrase, done) {
         done(info);
     });
 }
+
+exports.sendEther = function (ac1, ac2, done) {
+    web3.eth.sendTransaction({from: ac1, to: ac2, value: web3.toWei("1", "ether")}, function(err, res){
+        if(err || !res)
+            info.status=false;
+        else
+            info.status=true;
+        info.message=res;
+        done(info);
+    });
+}
