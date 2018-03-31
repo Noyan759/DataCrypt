@@ -58,8 +58,8 @@ app.post('/user/createUser',function(req,res){
       res.json(info);
   })
 });
-app.use('/authenticate', authenticate.router);
-app.use(authMiddleware);
+// app.use('/authenticate', authenticate.router);
+// app.use(authMiddleware);
 
 
 app.use('/user', DCAccountController);

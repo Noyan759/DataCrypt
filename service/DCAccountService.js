@@ -4,7 +4,7 @@ var bcrypt = require ('bcrypt');
 const saltRounds = 10;
 var info={};
 var web3;
-exports.initialze = function () {
+exports.initialize = function () {
     web3=module.exports.web3;
 }
 var details;
