@@ -8,6 +8,17 @@ exports.initialize = function () {
     web3=module.exports.web3;
 }
 var details;
+
+exports.sendEther = function (ac1, ac1paassword, ac2, ether, done) {
+    BCAccountService.unlockAccount(ac1, ac1paassword, function(info) {
+        if(info.status){
+            BCAccountService.sendEther(ac1, ac2, ether, function (res) {
+                done(res);
+            })
+        }
+    })
+}
+
 exports.createAccount = function(data, done) {
     BCAccountService.createAccount(data.password, function (address) {
         if(address.status==false){
@@ -16,11 +27,15 @@ exports.createAccount = function(data, done) {
         else{
             data.address=address.message;
             data.privateKey=null;
-            BCAccountService.sendEther(web3.eth.accounts[0], data.address, function(info) {
+            console.log('sending')
+            exports.sendEther(web3.eth.accounts[0], "paccount0", data.address, "1", function(info) {
                 if(info.status)
                     console.log('Base amount(1 Ether) transfered!');
+                else{
+                    console.log('Base ammount not added');
+                }
             })
-            console.log(data);
+            console.log('sent');
             bcrypt.hash(data.password, saltRounds).then(function(hash) {
                 // Store hash in your password DB.
                 data.password=hash;
@@ -62,6 +77,13 @@ exports.deleteAccount = function (data, done) {
     })
 }
 
+exports.deleteAllAccount = function (done) {
+    DCAccountModel.deleteAllDCAccount(function(info) {
+        console.log("deleteAccount response: "+info);
+        done(info);
+    })
+}
+
 exports.checkBalance = function (data, done) {
     DCAccountModel.getByUsername(data, function (res) {
         console.log('userdetails: '+res.user);
@@ -72,7 +94,7 @@ exports.checkBalance = function (data, done) {
             done(info);
         }
         else{
-            BCAccountService.checkBalance(res.user.address, function(info) {
+            BCAccountService.checkBalance(res.message.address, function(info) {
                 done(info);
             })
         }
@@ -89,7 +111,7 @@ exports.unlockAccount = function (data, done) {
             done(info);
         }
         else{
-            BCAccountService.unlockAccount(res.user.address, data.password, function(info) {
+            BCAccountService.unlockAccount(res.message.address, data.password, function(info) {
                 done(info);
             })
         }

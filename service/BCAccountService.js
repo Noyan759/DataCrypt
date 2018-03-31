@@ -10,10 +10,12 @@ exports.createAccount = function (passPhrase, done) {
         console.log('res: '+res);
         if(err || typeof res === 'undefined' || !res || res===undefined){
             info.status=false;
+            info.message=err;
         }
-        else
+        else{
             info.status=true;
-        info.message=res;
+            info.message=res;
+        }
         done(info);
     });
 }
@@ -41,13 +43,17 @@ exports.unlockAccount = function (accountAddress, passPhrase, done) {
     });
 }
 
-exports.sendEther = function (ac1, ac2, done) {
-    web3.eth.sendTransaction({from: ac1, to: ac2, value: web3.toWei("1", "ether")}, function(err, res){
-        if(err || !res)
+exports.sendEther = function (ac1, ac2, ether, done) {
+    web3.eth.sendTransaction({from: ac1, to: ac2, value: web3.toWei(ether, "ether")}, function (err, details) {
+        if(err || !details)
             info.status=false;
-        else
+        else{
+            console.log('Ether sent\n\n');
             info.status=true;
-        info.message=res;
+        }
+        info.message=details;
+        console.log('inside sendign ether');
+        console.log(info)
         done(info);
-    });
+    })
 }

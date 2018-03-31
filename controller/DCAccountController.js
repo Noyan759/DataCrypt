@@ -1,4 +1,5 @@
 var DCAccount=require('../service/DCAccountService');
+var BCAccount=require('../service/BCAccountService');
 var app = require('express');
 var router = app.Router()
 
@@ -23,6 +24,12 @@ var router = app.Router()
             res.json(info);
         })
     });
+    router.post('/deleteAllAccount',function(req,res){
+        console.log(req);
+        DCAccount.deleteAllAccount(function(info){
+            res.json(info);
+        })
+    });
     router.post('/checkBalance',function(req,res){
         console.log(req);
         DCAccount.checkBalance(req.body,function(info){
@@ -32,6 +39,12 @@ var router = app.Router()
     router.post('/unlockAccount',function(req,res){
         console.log(req);
         DCAccount.unlockAccount(req.body,function(info){
+            res.json(info);
+        })
+    });
+    router.post('/sendEther',function(req,res){
+        console.log(req);
+        DCAccount.sendEther(req.body.ac1, req.body.ac1password, req.body.ac2, req.body.ether, function(info){
             res.json(info);
         })
     });

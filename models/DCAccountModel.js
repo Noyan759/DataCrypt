@@ -5,8 +5,8 @@ const Schema = mongoose.Schema,
  
 const USER_INFO = new Schema({
  id: ObjectId,
- username: String,
- password: String,
+ username: { type: String, required: true, unique: true },
+ password: { type: String, required: true },
  email: String,
  address: String,
  privatekey: String
@@ -25,11 +25,14 @@ exports.createAccount = function (data, done) {
     person.save(function(err){
         if(err){
             info.status=false;
-            throw err;
+            info.message=err;
+            console.log('Creating err ');
         }
-        info.status=true;
-        info.message={publicAddress: data.address};
-        console.log(info);
+        else{
+            info.status=true;
+            info.message={publicAddress: data.address};
+        }
+        // console.log(info);
         done(info);
     })
 }
@@ -83,6 +86,21 @@ exports.updateAccount = function (data, done) {
 
 exports.deleteDCAccount = function (data, done) {
     User.findOneAndRemove({ username: data.username }, function(err) {
+        if (err){
+            info.message="Error!";
+            info.status=false;
+            throw err;
+        }        
+        // we have deleted the user
+        info.message="Deleted!";
+        info.status=true;
+        console.log(info);
+        done(info);
+    });
+}
+
+exports.deleteAllDCAccount = function (done) {
+    User.deleteMany({}, function(err) {
         if (err){
             info.message="Error!";
             info.status=false;

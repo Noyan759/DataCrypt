@@ -9,10 +9,10 @@ var DCAccount=require('./DCAccountService');
 var web3, io;
 
 //Private key extraction    
-var keydir = "F:/8th_Semester/SYP-II/Externalkeystore";
-var address = "70531c747a4a62f3198a8abb13b57c3b50126b54";
-var keyObject = keythereum.importFromFile(address, keydir);
-var pvtKey = keythereum.recover("account1", keyObject);
+// var keydir = "F:/8th_Semester/SYP-II/Externalkeystore";
+// var address = "70531c747a4a62f3198a8abb13b57c3b50126b54";
+// var keyObject = keythereum.importFromFile(address, keydir);
+// var pvtKey = keythereum.recover("account1", keyObject);
 // var pvtKeyString = "0x"+pvtKey.toString('hex')+"";
 // console.log("keyObject: \n" +keyObject+"\nprivateKey: "+pvtKey.toString('hex'));
 
