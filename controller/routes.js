@@ -32,7 +32,6 @@ var router = app.Router()
         })
     });
     router.post("/addFile", function(req, res){  
-        console.log("\nowner: " + req.body.owner + "\nhash: " + req.body.hash);
         
         Web3.storeFile(req.body, function (info) {
             console.log(info);
@@ -40,5 +39,12 @@ var router = app.Router()
             res.json(info);
         })
     });
-
+    router.post("/addMultipleFiles", function(req, res){  
+        
+        Web3.storeMultipleFiles(req.body, function (info) {
+            console.log(info);
+            // res.render('AddFile', { message: info });
+            res.json(info);
+        })
+    });
 module.exports = router;

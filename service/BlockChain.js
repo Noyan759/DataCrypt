@@ -110,7 +110,7 @@ exports.storeFile = function (data, done) {
             // console.log("info:");
             // console.log(info.res);
             if(!(info.message))
-                done({message: 'File cannot be submitted.'})
+                done({message: 'File cannot be submitted.', status: false})
             else{
                 proof.set.sendTransaction(
                     userDetails.message.address,
@@ -123,12 +123,12 @@ exports.storeFile = function (data, done) {
                     function(error, transactionHash)
                     {
                         if (error){
-                            info.message={tHash: "", note: error};
+                            info.message={tHash: "", fileHash: data.hash, note: error};
                             info.status=false;
                             console.log('Error: '+error);
                         }
                         else{
-                            info.message={tHash: transactionHash, note: "submitted"};
+                            info.message={tHash: transactionHash, fileHash: data.hash, note: "submitted"};
                             info.status=true;
                             console.log('Transaction Hash: '+info.message.tHash);
                         }
@@ -152,4 +152,50 @@ exports.getInfo = function (fileHash, done) {
     }
     
     done(info)
+}
+
+// var testing = {
+//     username: 'hello',
+//     password: 'hello1',
+//     hash: ["hello4000", "hello4001", "hello4002"]
+// }
+// var check = {
+//     'hash1': true,
+//     'hash2': false
+// };
+var check = {};
+var dataArray = [];
+
+var loopFunction = function (i, dataArray, check, done) {
+    if(i>0){
+        exports.storeFile(dataArray[i-1], function(info) {   
+            console.log('hash: '+info.message.fileHash+'  status: '+info.status);
+            check[info.message.fileHash]=info.status; 
+            loopFunction(i-1, dataArray, check, done);        
+        })
+    }
+    else{
+        console.log('check: ');
+        console.log(check);
+        done()
+    }
+}
+
+exports.storeMultipleFiles = function (sampleData, done) {
+    // sampleData=testing;
+    var x=sampleData.hash;
+    console.log('X: '+x);
+    console.log('size: '+x.length);
+
+    for(var i=0; i<x.length; i++) {
+        dataArray[i]={
+            username: sampleData.username,
+            password: sampleData.password,
+            hash: sampleData.hash[i]
+        };
+    }
+    
+    loopFunction(x.length, dataArray, check, function(){
+        done(check)
+    });
 }
