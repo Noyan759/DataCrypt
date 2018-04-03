@@ -24,7 +24,7 @@ var router = app.Router()
             res.json(info);
         })
     });
-    router.post('/deleteAllAccount',function(req,res){
+    router.get('/deleteAllAccount',function(req,res){
         console.log(req);
         DCAccount.deleteAllAccount(function(info){
             res.json(info);
