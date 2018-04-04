@@ -163,7 +163,7 @@ exports.getInfo = function (fileHash, done) {
 //     'hash1': true,
 //     'hash2': false
 // };
-var check = {};
+
 var dataArray = [];
 
 var loopFunction = function (i, dataArray, check, done) {
@@ -183,6 +183,7 @@ var loopFunction = function (i, dataArray, check, done) {
 
 exports.storeMultipleFiles = function (sampleData, done) {
     // sampleData=testing;
+    var check = {};
     var x=sampleData.hash;
     console.log('X: '+x);
     console.log('size: '+x.length);
